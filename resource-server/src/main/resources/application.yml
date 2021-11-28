@@ -1,0 +1,8 @@
+security:
+  oauth2:
+    client:
+      clientId: cleintId
+      clientSecret: secretId
+    resource:
+      tokenInfoUri: http://localhost:7000/oauth/check_token
+      

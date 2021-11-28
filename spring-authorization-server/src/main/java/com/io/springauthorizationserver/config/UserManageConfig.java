@@ -8,6 +8,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
@@ -22,16 +23,16 @@ public class UserManageConfig extends WebSecurityConfigurerAdapter {
 		
 		user.createUser(
 				User.withUsername("Mark")
-				.password("1234")
-				.authorities("read").build()
+				.password(pe().encode("1234"))
+				.authorities("ROLE_ADMIN").build() //  ("ROLE_ADMIN", "ROLE_USER")
 				);
 		
 		return user;
 	}
 	
 	@Bean
-	public PasswordEncoder passwordEncoder() {
-		return NoOpPasswordEncoder.getInstance();
+	public PasswordEncoder pe() {
+		return new BCryptPasswordEncoder();
 	}
 	
 	
@@ -43,7 +44,12 @@ public class UserManageConfig extends WebSecurityConfigurerAdapter {
 	
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		http.csrf().disable()
+//		http.csrf().disable()
+//		.authorizeRequests().antMatchers("/check_token").permitAll()
+//		.anyRequest().authenticated().and().formLogin();
+
+		
+		http.csrf().disable().antMatcher("/")
 		.authorizeHttpRequests()
 		.anyRequest().authenticated().and().formLogin();
 //		http.formLogin();

@@ -3,10 +3,12 @@ package com.io.springauthorizationserver.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
+import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
 
 //Grant Types => 
 //	authorization_code
@@ -22,19 +24,23 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 	@Autowired
 	AuthenticationManager authenticationManager;
 	
+	@Autowired
+	PasswordEncoder pe;
+	
 	@Override
 	public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
-		clients.inMemory()
-		.withClient("cleintId").secret("secretId")
+		
+		clients.inMemory()												// For giving token Validity Seconds customly 
+		.withClient("cleintId").secret(pe.encode("secretId")).accessTokenValiditySeconds(80000)
 		.scopes("read").authorizedGrantTypes("password", "refresh_token")
 		.and()
-		.withClient("cleintId3").secret("secretId3")
+		.withClient("cleintId3").secret(pe.encode("secretId3"))
 		.scopes("read").authorizedGrantTypes("password", "authorization_code", "refresh_token")
 		.and()
-		 .withClient("cleintId4").secret("secretId4")
+		 .withClient("cleintId4").secret(pe.encode("secretId4"))
 		.scopes("read").authorizedGrantTypes("client_credentials")
 		.and()
-		.withClient("cleintId2").secret("secretId2")
+		.withClient("cleintId2").secret(pe.encode("secretId4"))
 		.scopes("read").authorizedGrantTypes("authorization_code").redirectUris("http://localhost:8083");
 		
 		
@@ -68,6 +74,14 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 	public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
 		// Now this will try to call to other authentication existing in our UserManageConfig File and try to authenticate our user
 		endpoints.authenticationManager(authenticationManager);
+	}
+	
+	@Override
+	public void configure(AuthorizationServerSecurityConfigurer security) throws Exception {
+		// , "isAuthenticated()"
+//		security.checkTokenAccess("permitAll()");
+	    security.allowFormAuthenticationForClients().checkTokenAccess("permitAll()");       
+
 	}
 	
 }

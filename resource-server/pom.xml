@@ -9,16 +9,17 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.io</groupId>
-	<artifactId>spring-authorization-server</artifactId>
+	<artifactId>resource-server</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>spring-authorization-server</name>
+	<name>resource-server</name>
 	<description>Demo project for Spring Boot</description>
 	<properties>
 		<java.version>11</java.version>
 	</properties>
-	<dependencies>
 	
-		<!-- For Authorization Server -->
+	<dependencies>
+
+		<!-- For Resource Server -->
 		<dependency>
             <groupId>org.springframework.security.oauth.boot</groupId>
             <artifactId>spring-security-oauth2-autoconfigure</artifactId>
@@ -38,7 +39,7 @@
 		</dependency>
 
 
-		<!-- INteranlly Needed by Authorization Server -->
+		<!-- INteranlly Needed by Resource Server -->
 		<dependency>
 		  <groupId>javax.xml.bind</groupId>
 		  <artifactId>jaxb-api</artifactId>
@@ -57,14 +58,15 @@
 			<optional>true</optional>
 		</dependency>
  
+	
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter</artifactId>
+		</dependency>
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.security</groupId>
-			<artifactId>spring-security-test</artifactId>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
