@@ -1,0 +1,280 @@
+{
+	"info": {
+		"_postman_id": "d40a2d5d-299b-426c-8224-f145bee6d166",
+		"name": "Spring Custom Authorization Server",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Grant Type Authorization Code",
+			"item": [
+				{
+					"name": "Login",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": {
+								"password": "1234",
+								"username": "Mark"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": "http://localhost:7000/login"
+					},
+					"response": []
+				},
+				{
+					"name": "Generate Code",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:7000/oauth/authorize?response_type=code&client_id=cleintId2&scope=read",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "7000",
+							"path": [
+								"oauth",
+								"authorize"
+							],
+							"query": [
+								{
+									"key": "response_type",
+									"value": "code"
+								},
+								{
+									"key": "client_id",
+									"value": "cleintId2"
+								},
+								{
+									"key": "scope",
+									"value": "read"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Generate Access Token",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": {
+								"password": "secretId2",
+								"username": "cleintId2"
+							}
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:7000/oauth/token?grant_type=authorization_code&code=codeReceivedFromGenerateCode&scope=read",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "7000",
+							"path": [
+								"oauth",
+								"token"
+							],
+							"query": [
+								{
+									"key": "grant_type",
+									"value": "authorization_code"
+								},
+								{
+									"key": "code",
+									"value": "codeReceivedFromGenerateCode"
+								},
+								{
+									"key": "scope",
+									"value": "read"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Grant Type Password",
+			"item": [
+				{
+					"name": "Generate Access Token",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": {
+								"password": "secretId",
+								"username": "cleintId"
+							}
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:7000/oauth/token?grant_type=password&username=Mark&password=1234&scope=read",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "7000",
+							"path": [
+								"oauth",
+								"token"
+							],
+							"query": [
+								{
+									"key": "grant_type",
+									"value": "password"
+								},
+								{
+									"key": "username",
+									"value": "Mark"
+								},
+								{
+									"key": "password",
+									"value": "1234"
+								},
+								{
+									"key": "scope",
+									"value": "read"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Grant Type Refresh Token",
+			"item": [
+				{
+					"name": "Generate Token",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": {
+								"password": "secretId",
+								"username": "cleintId"
+							}
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:7000/oauth/token?grant_type=refresh_token&refresh_token=ebe70d7b-da06-44f6-bd38-b54026ae0ce2",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "7000",
+							"path": [
+								"oauth",
+								"token"
+							],
+							"query": [
+								{
+									"key": "grant_type",
+									"value": "refresh_token"
+								},
+								{
+									"key": "refresh_token",
+									"value": "ebe70d7b-da06-44f6-bd38-b54026ae0ce2"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Grant Type Client Credentials",
+			"item": [
+				{
+					"name": "Generate Token",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": {
+								"password": "secretId4",
+								"username": "cleintId4"
+							}
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:7000/oauth/token?grant_type=client_credentials&scope=read",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "7000",
+							"path": [
+								"oauth",
+								"token"
+							],
+							"query": [
+								{
+									"key": "grant_type",
+									"value": "client_credentials"
+								},
+								{
+									"key": "scope",
+									"value": "read"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Check Token",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:7000/oauth/check_token?token=62932929-6d47-4be4-80c1-a7e0371e960a",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "7000",
+					"path": [
+						"oauth",
+						"check_token"
+					],
+					"query": [
+						{
+							"key": "token",
+							"value": "62932929-6d47-4be4-80c1-a7e0371e960a"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Test Resource Server",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:8080/api/users/me"
+			},
+			"response": []
+		}
+	]
+}
