@@ -78,9 +78,11 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 	
 	@Override
 	public void configure(AuthorizationServerSecurityConfigurer security) throws Exception {
-		// , "isAuthenticated()"
-//		security.checkTokenAccess("permitAll()");
-	    security.allowFormAuthenticationForClients().checkTokenAccess("permitAll()");       
+		// isAuthenticated()  // we need to give clientId and secretId while checking token
+		// permitAll() // means we need to given client and secret id while checking token
+
+		// By Default Check token url is disabled we need to enable that by giving given settings
+	    security.allowFormAuthenticationForClients().checkTokenAccess("isAuthenticated()");       
 
 	}
 	
