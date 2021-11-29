@@ -1,5 +1,11 @@
-command => keytool -genkeypair -alias mytest -keyalg RSA -keypass mypass -keystore jwt.jks -storepass password
+# To generate file command 
+=> keytool -genkeypair -alias jwt -keyalg RSA -keypass password -keystore jwt.jks -storepass password
 
+// jwt is the keypair name password is like the secret key
 
-To view the file => keytool -list -rfc --keystore mytest.jks | openssl x509 -inform pem -pubkey
+# It is recommend to migrat to PKCS12. To do run given command
+=> keytool -importkeystore -srckeystore jwt.jks -destkeystore jwt.jks -deststoretype pkcs12
+
+# To view the file => keytool -list -rfc --keystore mytest.jks | openssl x509 -inform pem -pubkey
+
 

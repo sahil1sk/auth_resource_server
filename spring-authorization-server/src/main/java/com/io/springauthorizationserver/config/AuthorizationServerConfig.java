@@ -115,7 +115,7 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 	
 	@Bean
 	public JwtAccessTokenConverter jwtAccessTokenConverter() {
-		JwtAccessTokenConverter converter = new CustomTokenEnhancer(); // type => jwt, password => secretKey (password you added while generating key) 
+		JwtAccessTokenConverter converter = new CustomTokenEnhancer(); // type => jwt, password => secretKey (it is provided while generating jwt.jks file) 
 		converter.setKeyPair(new KeyStoreKeyFactory(new ClassPathResource("jwt.jks"), "password".toCharArray()).getKeyPair("jwt"));
 		return converter;
 	}
