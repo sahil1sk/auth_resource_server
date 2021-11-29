@@ -1,0 +1,5 @@
+command => keytool -genkeypair -alias mytest -keyalg RSA -keypass mypass -keystore jwt.jks -storepass password
+
+
+To view the file => keytool -list -rfc --keystore mytest.jks | openssl x509 -inform pem -pubkey
+

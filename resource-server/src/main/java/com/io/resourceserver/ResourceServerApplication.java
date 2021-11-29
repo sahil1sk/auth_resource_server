@@ -1,5 +1,6 @@
 package com.io.resourceserver;
 
+import java.io.Serializable;
 import java.security.Principal;
 import java.util.HashMap;
 import java.util.Map;
@@ -38,11 +39,11 @@ public class ResourceServerApplication {
     public ResponseEntity<Map> profile() // profile(Authentication value) => Another way to get the data of login user using credentials
     {
         //Build some dummy data to return for testing
-//        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+//        User u = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Authentication user = SecurityContextHolder.getContext().getAuthentication();
 //        String username = loggedInUser.getName();
         
-        
+        System.out.println(SecurityContextHolder.getContext().getAuthentication().toString());
         String email = user.getName() + "@howtodoinjava.com";
  
         Map profile = new HashMap<>();
@@ -61,6 +62,7 @@ public class ResourceServerApplication {
     
     @GetMapping("/test")
     public String getData() {
+    	System.out.println(SecurityContextHolder.getContext().getAuthentication().getPrincipal());
     	return "Test Success Full";
     }
     
@@ -88,6 +90,35 @@ class OAuth2ResourceServer extends ResourceServerConfigurerAdapter
     	.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
     }
+}
+
+class CustomPrincipal implements Serializable {
+	
+	private static final long serialVersionUID = 1L;
+	private String username;
+	private String email;
+	
+	public CustomPrincipal() {
+		
+	}
+
+	public CustomPrincipal(String username, String email) {
+		this.username = username;
+		this.email = email;	
+	}
+
+	public String getUsername() {
+		return username;
+	}
+	public void setUsername(String username) {
+		this.username = username;
+	}
+	public String getEmail() {
+		return email;
+	}
+	public void setEmail(String email) {
+		this.email = email;
+	}
 }
 
 //@Configuration

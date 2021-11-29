@@ -1,14 +1,38 @@
 package com.io.springauthorizationserver.config;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.common.DefaultOAuth2AccessToken;
+import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
+import org.springframework.security.oauth2.provider.ClientDetails;
+import org.springframework.security.oauth2.provider.ClientDetailsService;
+import org.springframework.security.oauth2.provider.OAuth2Authentication;
+import org.springframework.security.oauth2.provider.OAuth2RequestFactory;
+import org.springframework.security.oauth2.provider.TokenRequest;
+import org.springframework.security.oauth2.provider.endpoint.TokenEndpointAuthenticationFilter;
+import org.springframework.security.oauth2.provider.request.DefaultOAuth2RequestFactory;
+import org.springframework.security.oauth2.provider.token.TokenStore;
+import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
+import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
+import org.springframework.security.oauth2.provider.token.store.KeyStoreKeyFactory;
 
 //Grant Types => 
 //	authorization_code
@@ -26,7 +50,7 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 	
 	@Autowired
 	PasswordEncoder pe;
-	
+
 	@Override
 	public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
 		
@@ -70,10 +94,13 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 		// url => 
 	}
 	
+	
+	
 	@Override
 	public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
 		// Now this will try to call to other authentication existing in our UserManageConfig File and try to authenticate our user
-		endpoints.authenticationManager(authenticationManager);
+//		endpoints.authenticationManager(authenticationManager);
+		endpoints.tokenEnhancer(jwtAccessTokenConverter()).authenticationManager(authenticationManager);
 	}
 	
 	@Override
@@ -86,4 +113,32 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 
 	}
 	
+	@Bean
+	public JwtAccessTokenConverter jwtAccessTokenConverter() {
+		JwtAccessTokenConverter converter = new CustomTokenEnhancer(); // type => jwt, password => secretKey (password you added while generating key) 
+		converter.setKeyPair(new KeyStoreKeyFactory(new ClassPathResource("jwt.jks"), "password".toCharArray()).getKeyPair("jwt"));
+		return converter;
+	}
+	
+
+}
+
+
+class CustomTokenEnhancer extends JwtAccessTokenConverter {
+	@Override
+	public OAuth2AccessToken enhance(OAuth2AccessToken accessToken, OAuth2Authentication authentication) {
+//		User user = (User) authentication.getPrincipal(); // User Model which is settled in context for now we are using in memory user
+//		User u = (User) authentication.getPrincipal();
+//		u.getUsername();
+//		
+		
+		Map<String, Object> info = new LinkedHashMap<String, Object>(accessToken.getAdditionalInformation());
+
+		info.put("email", "email@gmail.com");
+
+		DefaultOAuth2AccessToken customAccessToken = new DefaultOAuth2AccessToken(accessToken);
+		customAccessToken.setAdditionalInformation(info);
+
+		return super.enhance(customAccessToken, authentication);
+	}
 }
